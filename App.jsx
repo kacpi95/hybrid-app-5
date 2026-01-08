@@ -20,6 +20,11 @@ const enemies = [
 ];
 
 export default function App() {
+  const SERVER_URL = 'http://localhost:4000';
+  const WS_URL = 'ws://localhost:4000';
+
+  const wsRef = useRef(null);
+
   const playerStrength = 8;
 
   const [playerStamina, setPlayerStamina] = useState(60);
@@ -29,6 +34,18 @@ export default function App() {
   const [enemyStamina, setEnemyStamina] = useState(50);
   const [result, setResult] = useState('');
   const [gameOver, setGameOver] = useState(false);
+
+  const loadEnemy = async () => {
+    const res = await fetch(`${SERVER_URL}/return-monster`);
+    const data = await res.json();
+
+    setEnemy({
+      name: data.race,
+      strength: data.strength,
+      image: enemyImages[data.race],
+    });
+    setEnemyStamina(data.stamina);
+  };
 
   const rollDamage = (strength) => {
     const random = Math.floor(Math.random() * 6) + 1;
