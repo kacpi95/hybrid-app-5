@@ -1,6 +1,7 @@
-import { Button, StyleSheet, Text, View } from 'react-native';
+import { Button, Image, StyleSheet, Text, View } from 'react-native';
 import Enemy from './components/Enemy/Enemy';
 import { useState } from 'react';
+import { ScrollView } from 'react-native-web';
 
 const enemies = [
   {
@@ -23,7 +24,7 @@ export default function App() {
   const [result, setResult] = useState('');
   const [gameOver, setGameOver] = useState(false);
 
-  const rollDamage = () => {
+  const rollDamage = (strength) => {
     const random = Math.floor(Math.random() * 6) + 1;
     return Math.floor((random - 0.5) * strength);
   };
@@ -53,29 +54,86 @@ export default function App() {
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>⚔️ Pojedynek ⚔️</Text>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.header}>⚔️ Pojedynek ⚔️</Text>
 
-      <View style={styles.section}>
-        <Text style={styles.title}>Gracz</Text>
-        <Text>Siła: {playerStrength}</Text>
-        <Text>Wytrzymałość: {playerStamina}</Text>
-      </View>
+        <View style={styles.section}>
+          <Text style={styles.title}>Gracz</Text>
+          <Text style={styles.stat}>Siła: {playerStrength}</Text>
+          <Image
+            source={require('./assets/hero.jpg')}
+            style={styles.playerImage}
+          />
+          <Text style={styles.stat}>Wytrzymałość: {playerStamina}</Text>
+        </View>
 
-      <View style={styles.section}>
-        <Text style={styles.title}>Przeciwnik</Text>
-        <Enemy
-          name={enemy.name}
-          strength={enemy.strength}
-          image={enemy.image}
-        />
-        <Text>Wytrzymałość: {enemyStamina}</Text>
-      </View>
+        <View style={styles.section}>
+          <Text style={styles.title}>Przeciwnik</Text>
+          <Enemy
+            name={enemy.name}
+            strength={enemy.strength}
+            image={enemy.image}
+          />
+          <Text style={styles.stat}>Wytrzymałość: {enemyStamina}</Text>
+        </View>
 
-      <Button title='⚔️ Następna runda' onPress={fightRound} />
+        <Button title='⚔️ Następna runda' onPress={fightRound} />
 
-      {result !== '' && <Text style={styles.result}>{result}</Text>}
+        {result !== '' && <Text style={styles.result}>{result}</Text>}
+      </ScrollView>
     </View>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingBottom: 20,
+    backgroundColor: '#1b1b1b',
+    padding: 20,
+    justifyContent: 'space-between',
+  },
+  header: {
+    fontSize: 30,
+    textAlign: 'center',
+    color: '#f5f5f5',
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  section: {
+    backgroundColor: '#333',
+    borderRadius: 12,
+    padding: 15,
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  title: {
+    fontSize: 20,
+    color: '#b62525ff',
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  playerImage: {
+    width: 120,
+    height: 120,
+    marginTop: 10,
+    borderRadius: 8,
+  },
+  text: {
+    color: '#eee',
+    fontSize: 16,
+  },
+  result: {
+    fontSize: 28,
+    textAlign: 'center',
+    marginTop: 15,
+    fontWeight: 'bold',
+    color: '#00ff99',
+  },
+  stat: {
+    marginTop: 15,
+    color: '#ddd',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+});
