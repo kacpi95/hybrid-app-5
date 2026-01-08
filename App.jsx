@@ -26,7 +26,15 @@ export default function App() {
 
   const rollDamage = (strength) => {
     const random = Math.floor(Math.random() * 6) + 1;
-    return Math.floor((random - 0.5) * strength);
+    return Math.floor((random * strength) / 5);
+  };
+
+  const resetGame = () => {
+    setPlayerStamina(60);
+    setEnemy(enemies[Math.floor(Math.random() * enemies.length)]);
+    setEnemyStamina(50);
+    setResult('');
+    setGameOver(false);
   };
 
   const fightRound = () => {
@@ -77,7 +85,17 @@ export default function App() {
           <Text style={styles.stat}>Wytrzymałość: {enemyStamina}</Text>
         </View>
 
-        <Button title='⚔️ Następna runda' onPress={fightRound} />
+        {!gameOver && (
+          <View style={styles.buttonContainer}>
+            <Button title='⚔️ Następna runda' onPress={fightRound} />
+          </View>
+        )}
+
+        {gameOver && (
+          <View style={styles.buttonContainer}>
+            <Button title='🔄 Spróbuj ponownie' onPress={resetGame} />
+          </View>
+        )}
 
         {result !== '' && <Text style={styles.result}>{result}</Text>}
       </ScrollView>
@@ -135,5 +153,9 @@ const styles = StyleSheet.create({
     color: '#ddd',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  buttonContainer: {
+    marginTop: 20,
+    marginBottom: 30,
   },
 });
