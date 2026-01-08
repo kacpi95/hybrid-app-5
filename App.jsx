@@ -23,9 +23,33 @@ export default function App() {
   const [result, setResult] = useState('');
   const [gameOver, setGameOver] = useState(false);
 
-  const rollDamege = () => {
+  const rollDamage = () => {
     const random = Math.floor(Math.random() * 6) + 1;
     return Math.floor((random - 0.5) * strength);
+  };
+
+  const fightRound = () => {
+    if (gameOver) return;
+
+    const playerHit = rollDamage(playerStrength);
+    const enemyHit = rollDamage(enemy.strength);
+
+    const newPlayerStamina = playerStamina - enemyHit;
+    const newEnemyStamina = enemyStamina - playerHit;
+
+    setPlayerStamina(newPlayerStamina);
+    setEnemyStamina(newEnemyStamina);
+
+    if (newEnemyStamina <= 0 && newPlayerStamina <= 0) {
+      setResult('Remis!');
+      setGameOver(true);
+    } else if (newEnemyStamina <= 0) {
+      setResult('Zwycięstwo!');
+      setGameOver(true);
+    } else if (newPlayerStamina <= 0) {
+      setResult('Porażka...');
+      setGameOver(true);
+    }
   };
   return;
 }
