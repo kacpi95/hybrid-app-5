@@ -22,6 +22,11 @@ export default function App() {
   const [enemyStamina, setEnemyStamina] = useState(50);
   const [result, setResult] = useState('');
   const [gameOver, setGameOver] = useState(false);
+
+  const rollDamege = () => {
+    const random = Math.floor(Math.random() * 6) + 1;
+    return Math.floor((random - 0.5) * strength);
+  };
   return;
 }
 
