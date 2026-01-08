@@ -1,7 +1,13 @@
-import { Button, Image, StyleSheet, Text, View } from 'react-native';
+import {
+  Button,
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+} from 'react-native';
 import Enemy from './components/Enemy/Enemy';
 import { useState } from 'react';
-import { ScrollView } from 'react-native-web';
 
 const enemies = [
   {
