@@ -8,7 +8,7 @@ export default function Enemy({ name, strenght, image }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>{name}</Text>
-      {image && <Image src={image} style={styles.image} />}
+      {image && <Image source={image} style={styles.image} />}
       <Text style={styles.strenght}>Siła: {strenght}</Text>
       <Text style={styles.stamina}>Wytrzymałość: {stamina}</Text>
     </View>

@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Button, StyleSheet, Text, View } from 'react-native';
 import Enemy from './components/Enemy/Enemy';
 import { useState } from 'react';
 
@@ -51,7 +51,31 @@ export default function App() {
       setGameOver(true);
     }
   };
-  return;
+  return (
+    <View style={styles.container}>
+      <Text style={styles.header}>⚔️ Pojedynek ⚔️</Text>
+
+      <View style={styles.section}>
+        <Text style={styles.title}>Gracz</Text>
+        <Text>Siła: {playerStrength}</Text>
+        <Text>Wytrzymałość: {playerStamina}</Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.title}>Przeciwnik</Text>
+        <Enemy
+          name={enemy.name}
+          strength={enemy.strength}
+          image={enemy.image}
+        />
+        <Text>Wytrzymałość: {enemyStamina}</Text>
+      </View>
+
+      <Button title='⚔️ Następna runda' onPress={fightRound} />
+
+      {result !== '' && <Text style={styles.result}>{result}</Text>}
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({});
