@@ -7,7 +7,7 @@ import {
   ScrollView,
 } from 'react-native';
 import Enemy from './components/Enemy/Enemy';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const enemies = [
   {
@@ -46,6 +46,33 @@ export default function App() {
     });
     setEnemyStamina(data.stamina);
   };
+
+  useEffect(() => {
+    wsRef.current = new WebSocket(WS_URL);
+
+    wsRef.current.onmessage = (msg) => {
+      if (gameOver) return;
+
+      const event = JSON.parse(msg.data);
+      if (event.type === 'BUFF') {
+        if (event.strengthBoost) {
+          setEnemy((prev) => ({
+            ...prev,
+            strength: prev.strength + event.strengthBoost,
+          }));
+        }
+        if (event.staminaBoost) {
+          setEnemyStamina((prev) => prev + event.staminaBoost);
+        }
+      }
+    };
+
+    return () => wsRef.current?.close();
+  }, [gameOver]);
+
+  useEffect(() => {
+    loadEnemy();
+  }, []);
 
   const rollDamage = (strength) => {
     const random = Math.floor(Math.random() * 6) + 1;
