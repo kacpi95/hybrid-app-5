@@ -9,15 +9,11 @@ import {
 import Enemy from './components/Enemy/Enemy';
 import { useEffect, useRef, useState } from 'react';
 
-const enemies = [
-  {
-    name: 'Orc',
-    strength: 10,
-    image: require('./assets/orc.jpg'),
-  },
-  { name: 'Goblin', strength: 6, image: require('./assets/goblin.jpg') },
-  { name: 'Troll', strength: 8, image: require('./assets/troll.jpg') },
-];
+const enemyImages = {
+  goblin: require('./assets/goblin.jpg'),
+  orc: require('./assets/orc.jpg'),
+  troll: require('./assets/troll.jpg'),
+};
 
 export default function App() {
   const SERVER_URL = 'http://localhost:4000';
@@ -28,10 +24,8 @@ export default function App() {
   const playerStrength = 8;
 
   const [playerStamina, setPlayerStamina] = useState(60);
-  const [enemy, setEnemy] = useState(
-    enemies[Math.floor(Math.random() * enemies.length)]
-  );
-  const [enemyStamina, setEnemyStamina] = useState(50);
+  const [enemy, setEnemy] = useState(null);
+  const [enemyStamina, setEnemyStamina] = useState(0);
   const [result, setResult] = useState('');
   const [gameOver, setGameOver] = useState(false);
 
@@ -74,42 +68,42 @@ export default function App() {
     loadEnemy();
   }, []);
 
-  const rollDamage = (strength) => {
-    const random = Math.floor(Math.random() * 6) + 1;
-    return Math.floor((random * strength) / 5);
-  };
-
-  const resetGame = () => {
-    setPlayerStamina(60);
-    setEnemy(enemies[Math.floor(Math.random() * enemies.length)]);
-    setEnemyStamina(50);
-    setResult('');
-    setGameOver(false);
-  };
+  const rollDamage = (strength) =>
+    Math.floor((Math.random() * strength) / 2) + 1;
 
   const fightRound = () => {
-    if (gameOver) return;
+    if (gameOver || !enemy) return;
 
     const playerHit = rollDamage(playerStrength);
     const enemyHit = rollDamage(enemy.strength);
 
-    const newPlayerStamina = playerStamina - enemyHit;
-    const newEnemyStamina = enemyStamina - playerHit;
+    const newPlayer = playerStamina - enemyHit;
+    const newEnemy = enemyStamina - playerHit;
 
-    setPlayerStamina(newPlayerStamina);
-    setEnemyStamina(newEnemyStamina);
+    setPlayerStamina(newPlayer);
+    setEnemyStamina(newEnemy);
 
-    if (newEnemyStamina <= 0 && newPlayerStamina <= 0) {
+    if (newEnemy <= 0 && newPlayer <= 0) {
       setResult('Remis!');
       setGameOver(true);
-    } else if (newEnemyStamina <= 0) {
+    } else if (newEnemy <= 0) {
       setResult('Zwycięstwo!');
       setGameOver(true);
-    } else if (newPlayerStamina <= 0) {
+    } else if (newPlayer <= 0) {
       setResult('Porażka...');
       setGameOver(true);
     }
   };
+
+  const resetGame = () => {
+    setPlayerStamina(60);
+    setResult('');
+    setGameOver(false);
+    loadEnemy();
+  };
+
+  if (!enemy) return <Text>Loading...</Text>;
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -135,16 +129,10 @@ export default function App() {
           <Text style={styles.stat}>Wytrzymałość: {enemyStamina}</Text>
         </View>
 
-        {!gameOver && (
-          <View style={styles.buttonContainer}>
-            <Button title='⚔️ Następna runda' onPress={fightRound} />
-          </View>
-        )}
-
-        {gameOver && (
-          <View style={styles.buttonContainer}>
-            <Button title='🔄 Spróbuj ponownie' onPress={resetGame} />
-          </View>
+        {!gameOver ? (
+          <Button title='⚔️ Następna runda' onPress={fightRound} />
+        ) : (
+          <Button title='🔄 Spróbuj ponownie' onPress={resetGame} />
         )}
 
         {result !== '' && <Text style={styles.result}>{result}</Text>}
